@@ -4,9 +4,8 @@ const graphqlHTTP = require("express-graphql");
 const { buildSchema } = require("graphql");
 const dummyData = require("./data.json");
 
-//get data from DB
+// initialize a connection to the database
 const knex = require("knex")(config.db);
-const models = require("./models")(knex);
 
 const schema = buildSchema(`
 type Post {
@@ -14,8 +13,7 @@ type Post {
     title: String
     body:  String
     status: String
-    publishDate: String
-    tags: [String]
+    time: String
 }
 
 input PostInput {
@@ -42,46 +40,51 @@ input PostInput {
 
 const resolvers = {
   Posts: () => {
-    return dummyData.posts;
+    //working
+    return knex("posts")
+      .select()
+      .then((posts) => {
+        return posts;
+      });
   },
-  PostsByStatus: (request) => {
-    const posts = [];
-    dummyData.posts.forEach((post) => {
-      if (post.status === request.status) {
-        posts.push(post);
-      }
+  //come back to these for additional functionality
+  // PostsByStatus: (request) => {
+  //   const posts = [];
+  //   dummyData.posts.forEach((post) => {
+  //     if (post.status === request.status) {
+  //       posts.push(post);
+  //     }
+  //   });
+  //   return posts;
+  // },
+  // PostsByTag: (request) => {
+  //   const posts = [];
+  //   dummyData.posts.forEach((post) => {
+  //     if (post.tags.includes(request.tag)) {
+  //       posts.push(post);
+  //     }
+  //   });
+  //   return posts;
+  // },
+  AddPost: async (request) => {
+    //working
+    return knex("posts").insert({
+      title: request.input.title,
+      body: request.input.body,
+      status: request.input.status,
     });
-    return posts;
   },
-  PostsByTag: (request) => {
-    const posts = [];
-    dummyData.posts.forEach((post) => {
-      if (post.tags.includes(request.tag)) {
-        posts.push(post);
-      }
+  EditPost: async (request) => {
+    //working but changes the order of the posts
+    return knex("posts").where("id", "=", request.id).update({
+      title: request.input.title,
+      body: request.input.body,
+      status: request.input.status,
     });
-    return posts;
   },
-  AddPost: (request) => {
-    const post = Object.assign({}, request.input);
-    dummyData.posts.push(post);
-    return dummyData.posts;
-  },
-  EditPost: (request) => {
-    dummyData.posts.forEach((post) => {
-      if (post.id === request.id) {
-        Object.assign(post, request.input);
-      }
-    });
-    return dummyData.posts;
-  },
-  DeletePost: (request) => {
-    dummyData.posts.forEach((post, index) => {
-      if (request.id === post.id) {
-        dummyData.posts.splice(index, 1);
-      }
-    });
-    return dummyData.posts;
+  DeletePost: async (request) => {
+    //working
+    return knex("posts").del().where("id", "=", request.id);
   },
 };
 
