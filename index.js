@@ -24,11 +24,10 @@ const typeDefs = gql`
   type Query {
     Posts: [Post]
     PostsByStatus(status: String): [Post]
-    PostsByTag(tag: String): [Post]
   }
 
   type Mutation {
-    AddPost(title: String, body: String, status: String): [Post]
+    AddPost(title: String, body: String, status: String): Post
     EditPost(id: String, title: String, body: String, status: String): Post
     DeletePost(id: String): DeletePost
   }
@@ -44,19 +43,22 @@ const resolvers = {
       //working
       return knex("posts")
         .select()
+        .orderBy("time", "desc")
         .then((posts) => {
           return posts;
         });
     },
+    PostsByStatus: (parent, { status }) => {
+      return knex("posts").where("status", "=", status).select();
+    },
   },
   Mutation: {
-    AddPost: async (request) => {
-      console.log(request);
+    AddPost: async (parent, { title, body, status }) => {
       //working
       return knex("posts").insert({
-        title: request.title,
-        body: request.body,
-        status: request.status,
+        title: title,
+        body: body,
+        status: status,
       });
     },
     EditPost: async (parent, { id, title, body, status }) => {
@@ -71,25 +73,6 @@ const resolvers = {
       return knex("posts").del().where("id", "=", id);
     },
   },
-  //come back to these for additional functionality
-  // PostsByStatus: (request) => {
-  //   const posts = [];
-  //   dummyData.posts.forEach((post) => {
-  //     if (post.status === request.status) {
-  //       posts.push(post);
-  //     }
-  //   });
-  //   return posts;
-  // },
-  // PostsByTag: (request) => {
-  //   const posts = [];
-  //   dummyData.posts.forEach((post) => {
-  //     if (post.tags.includes(request.tag)) {
-  //       posts.push(post);
-  //     }
-  //   });
-  //   return posts;
-  // },
 };
 
 // GraphQL: Schema

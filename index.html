@@ -3,17 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
     <title>YuriDiary</title>
   </head>
   <body>
     <header>
       <h1>A Thought A Day</h1>
     </header>
-    <form class="add-form">
-      <input type="text" placeholder="Title" />
-      <input type="text" placeholder="Your thought for the day" />
-      <button class="add-post-btn">Add</button>
+    <div class="status-selector">
+      <a href="#" class="published display">publish</a>
+      <a href="#" class="drafts">draft</a>
+    </div>
+    <form class="add-post">
+      <input type="text" placeholder="Title" id="post-title" />
+      <input
+        type="text"
+        placeholder="Your thought for the day"
+        id="post-body"
+      />
+      <label for="status">Status:</label>
+      <select id="post-status">
+        <option value="draft">draft</option>
+        <option value="publish">publish</option>
+      </select>
+      <button id="add-post-btn">Add</button>
     </form>
+
+    <form class="edit-post" id="popup">
+      <input type="text" placeholder="Title" id="edit-post-title" />
+      <input
+        type="text"
+        placeholder="Your thought for the day"
+        id="edit-post-body"
+      />
+      <label for="status">Status:</label>
+      <select id="edit-post-status">
+        <option value="draft">draft</option>
+        <option value="publish">publish</option>
+      </select>
+    </form>
+
     <section id="post-container"></section>
     <script src="app.js"></script>
   </body>
