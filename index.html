@@ -4,46 +4,62 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./style.css" />
-    <title>YuriDiary</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@200;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>A Thought A Day</title>
   </head>
   <body>
     <header>
       <h1>A Thought A Day</h1>
     </header>
-    <div class="status-selector">
-      <a href="#" class="published display">publish</a>
-      <a href="#" class="drafts">draft</a>
+    <div class="body-container">
+      <div class="left-container">
+        <div class="status-selector">
+          <a href="#" class="published display">publish</a>
+          <a href="#" class="drafts">draft</a>
+        </div>
+        <section id="post-container"></section>
+      </div>
+      <div class="right-container">
+        <form class="add-post">
+          <p>ADD POST</p>
+          <input type="text" placeholder="Title" id="post-title" />
+          <input
+            type="text"
+            placeholder="Your thought for the day"
+            id="post-body"
+          />
+          <label for="status">Choose status:</label>
+          <select id="post-status">
+            <option value="draft">draft</option>
+            <option value="publish">publish</option>
+          </select>
+          <button id="add-post-btn">Add</button>
+        </form>
+
+        <form class="edit-post" id="popup">
+          <p>EDIT POST</p>
+          <input type="text" placeholder="Title" id="edit-post-title" />
+          <input
+            type="text"
+            placeholder="Your thought for the day"
+            id="edit-post-body"
+          />
+          <label for="status">Choose status:</label>
+          <select id="edit-post-status">
+            <option value="draft">draft</option>
+            <option value="publish">publish</option>
+          </select>
+          <button id="edit-post-btn">Save</button>
+        </form>
+      </div>
     </div>
-    <form class="add-post">
-      <input type="text" placeholder="Title" id="post-title" />
-      <input
-        type="text"
-        placeholder="Your thought for the day"
-        id="post-body"
-      />
-      <label for="status">Status:</label>
-      <select id="post-status">
-        <option value="draft">draft</option>
-        <option value="publish">publish</option>
-      </select>
-      <button id="add-post-btn">Add</button>
-    </form>
-
-    <form class="edit-post" id="popup">
-      <input type="text" placeholder="Title" id="edit-post-title" />
-      <input
-        type="text"
-        placeholder="Your thought for the day"
-        id="edit-post-body"
-      />
-      <label for="status">Status:</label>
-      <select id="edit-post-status">
-        <option value="draft">draft</option>
-        <option value="publish">publish</option>
-      </select>
-    </form>
-
-    <section id="post-container"></section>
+    <a href="https://github.com/yurikanamba/blog-api" id="github-link"
+      >Check out the API on Github</a
+    >
     <script src="app.js"></script>
   </body>
 </html>
