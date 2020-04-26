@@ -21,29 +21,20 @@ const typeDefs = gql`
     time: String
   }
 
-  input PostInput {
-    id: String
-    title: String
-    body: String
-    status: String
-    publishDate: String
-    tags: [String]
-  }
-
   type Query {
     Posts: [Post]
     PostsByStatus(status: String): [Post]
     PostsByTag(tag: String): [Post]
   }
 
-  type DeletePost {
-    ok: Boolean
+  type Mutation {
+    AddPost(title: String, body: String, status: String): [Post]
+    EditPost(id: String, title: String, body: String, status: String): Post
+    DeletePost(id: String): DeletePost
   }
 
-  type Mutation {
-    AddPost(input: PostInput): [Post]
-    EditPost(id: String, input: PostInput): [Post]
-    DeletePost(id: String): DeletePost
+  type DeletePost {
+    ok: Boolean
   }
 `;
 
@@ -56,6 +47,28 @@ const resolvers = {
         .then((posts) => {
           return posts;
         });
+    },
+  },
+  Mutation: {
+    AddPost: async (request) => {
+      console.log(request);
+      //working
+      return knex("posts").insert({
+        title: request.title,
+        body: request.body,
+        status: request.status,
+      });
+    },
+    EditPost: async (parent, { id, title, body, status }) => {
+      //working but changes the order of the posts
+      return knex("posts").where("id", "=", id).update({
+        title: title,
+        body: body,
+        status: status,
+      });
+    },
+    DeletePost: async (parent, { id }) => {
+      return knex("posts").del().where("id", "=", id);
     },
   },
   //come back to these for additional functionality
@@ -77,28 +90,6 @@ const resolvers = {
   //   });
   //   return posts;
   // },
-  Mutation: {
-    AddPost: async (request) => {
-      //working
-      return knex("posts").insert({
-        title: request.input.title,
-        body: request.input.body,
-        status: request.input.status,
-      });
-    },
-    EditPost: async (request) => {
-      //working but changes the order of the posts
-      return knex("posts").where("id", "=", request.id).update({
-        title: request.input.title,
-        body: request.input.body,
-        status: request.input.status,
-      });
-    },
-    DeletePost: async (request) => {
-      //working
-      return knex("posts").del().where("id", "=", request.id);
-    },
-  },
 };
 
 // GraphQL: Schema

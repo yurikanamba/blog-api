@@ -1,3 +1,5 @@
+window.onload = loadData;
+
 function loadData() {
   fetch("http://localhost:4000/graphql", {
     method: "POST",
@@ -12,7 +14,9 @@ function loadData() {
     .then((res) => res.json())
     .then((res) => res.data.Posts)
     .then((posts) => {
+      console.log(posts);
       const postContainer = document.getElementById("post-container");
+      postContainer.innerHTML = "";
       posts.forEach((postdata) => {
         if (postdata.status === "publish") {
           const post = document.createElement("div");
@@ -44,9 +48,6 @@ function loadData() {
     })
     .then(() => {
       const deleteBtn = document.querySelectorAll(".delete-btn");
-      function deletePost(e) {
-        console.log(e.target);
-      }
       for (let i = 0; i < deleteBtn.length; i++) {
         deleteBtn[i].addEventListener("click", deletePost);
       }
@@ -54,9 +55,25 @@ function loadData() {
     .catch((err) => console.log(err));
 }
 
-window.onload = loadData;
+function deletePost(e) {
+  const id = e.target.id;
+  const mutation = `
+    mutation {
+      DeletePost(id: "${id}") {
+        ok
+      }
+    }
+  `;
 
-// const addBtn = document.querySelector(".add-post-btn");
+  fetch("http://localhost:4000/graphql", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query: mutation }),
+  })
+    .then((res) => res.json())
+    .then(() => loadData())
+    .catch((err) => console.log(err));
+}
 
 const addPost = () => {
   console.log("clicked");
@@ -75,8 +92,6 @@ const addPost = () => {
     .then((res) => res.json())
     .then((res) => console.log(res));
 };
-
-//addBtn.addEventListener("click", addPost);
 
 //4 ways to call a graphQL API: https://www.apollographql.com/blog/4-simple-ways-to-call-a-graphql-api-a6807bcdb355
 //const fetch = require("graphql-fetch")("http://localhost:4000/graphql");
