@@ -1,3 +1,5 @@
+Add image of DB schema
+
 x install express
 x run express
 x download nodemon

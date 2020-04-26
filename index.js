@@ -1,126 +1,134 @@
-// /**
-//  ********************************DEPENDENCIES********************************
-//  ****************************************************************************
-//  */
+//Imports: Express
+const express = require("express");
+const APP = express();
 
-// /*
-// Instead of hard-coding configs for your app whenever you need them, I think
-// its polite to have them all in one place. Think of config.js as the global
-// control panel for your app.
-// */
-// const config = require("./config");
+// Imports: GraphQL
+const { ApolloServer } = require("apollo-server-express");
+const { gql } = require("apollo-server-express");
+//apollo-server-express provides the glue for serving graphql over HTTP on top of express
 
-// /*
-// Database and other external 'services'. In general, when interfacing
-// with an external API it can be helpful to separate your code into
-// isolated modules that have a single responsibility.
+// initialize a connection to the database
+const config = require("./config");
+//const knex = require("knex")(config.db);
+const knex = require("./knex/knex");
 
-// In this case, I've made a database 'service', which will contain bundles
-// of handy functions for interacting with our database. There's also a
-// 'logger' service, that just formats the logs in a way that makes them
-// easier to debug.
+const typeDefs = gql`
+  type Post {
+    id: String
+    title: String
+    body: String
+    status: String
+    time: String
+  }
 
-// Notice that any configs required by the services are explicitly injected
-// here. In principle, you could cut out any of these services and paste it
-// into another project, and assuming your business logic is pretty similar,
-// all you would have to change is the injected config.
-// */
-// const services = require("./services")(config); //NO SERVICES FOLDER AT THE MOMENT
+  input PostInput {
+    id: String
+    title: String
+    body: String
+    status: String
+    publishDate: String
+    tags: [String]
+  }
 
-// // initialize a connection to the database, and pass this
-// // to the various submodules within
-// const knex = require("knex")(config.db);
-// const models = require("./models")(knex);
+  type Query {
+    Posts: [Post]
+    PostsByStatus(status: String): [Post]
+    PostsByTag(tag: String): [Post]
+  }
 
-// /*
-// Routes for the server. Note that these are explicitly injected the
-// initialized 'services', including the database methods and logger.
-// We use this kind of 'dependency injection' to prevent arbitrarily
-// 'require'-ing code everywhere. You'll appreciate this when writing tests
-// in this repo. Another benefit, if you use dependency injection its much
-// harder to end up with circular dependencies =)
-// */
-// const apiRouter = require("./controllers")(models);
+  type DeletePost {
+    ok: Boolean
+  }
 
-// const morgan = require("morgan"); // a popular library for logging your requests
+  type Mutation {
+    AddPost(input: PostInput): [Post]
+    EditPost(id: String, input: PostInput): [Post]
+    DeletePost(id: String): DeletePost
+  }
+`;
 
-// const bodyParser = require("body-parser"); // a middleware plugin to enable express to parse JSON
+const resolvers = {
+  Query: {
+    Posts: () => {
+      //working
+      return knex("posts")
+        .select()
+        .then((posts) => {
+          return posts;
+        });
+    },
+  },
+  //come back to these for additional functionality
+  // PostsByStatus: (request) => {
+  //   const posts = [];
+  //   dummyData.posts.forEach((post) => {
+  //     if (post.status === request.status) {
+  //       posts.push(post);
+  //     }
+  //   });
+  //   return posts;
+  // },
+  // PostsByTag: (request) => {
+  //   const posts = [];
+  //   dummyData.posts.forEach((post) => {
+  //     if (post.tags.includes(request.tag)) {
+  //       posts.push(post);
+  //     }
+  //   });
+  //   return posts;
+  // },
+  Mutation: {
+    AddPost: async (request) => {
+      //working
+      return knex("posts").insert({
+        title: request.input.title,
+        body: request.input.body,
+        status: request.input.status,
+      });
+    },
+    EditPost: async (request) => {
+      //working but changes the order of the posts
+      return knex("posts").where("id", "=", request.id).update({
+        title: request.input.title,
+        body: request.input.body,
+        status: request.input.status,
+      });
+    },
+    DeletePost: async (request) => {
+      //working
+      return knex("posts").del().where("id", "=", request.id);
+    },
+  },
+};
 
-// // and of course, an express server =)
-// const express = require("express");
+// GraphQL: Schema
+const SERVER = new ApolloServer({
+  cors: true,
+  typeDefs: typeDefs,
+  resolvers: resolvers,
+  playground: {
+    endpoint: `http://localhost:4000/graphql`,
+    settings: {
+      "editor.theme": "light",
+    },
+  },
+});
 
-// const app = express();
+// Middleware: GraphQL
+SERVER.applyMiddleware({
+  app: APP,
+});
 
-// /**
-//  ********************************SERVER SETUP********************************
-//  ****************************************************************************
-//  */
+// Express: Port
+const PORT = 4000 || process.env;
+const url = `http://localhost:${PORT}/graphql`;
 
-// /*
-// This consists mostly of adding middleware and starting the server. Middleware,
-// in the context of express, is a collective term to describe functions that run
-// to handle a request.
+// Express: Listener
+APP.listen(PORT, () => {
+  console.log(`The server has started on port: ${PORT}`);
+  console.log(`http://localhost:${PORT}/graphql`);
+  console.log(`🚀  Server ready at ${url}`);
+});
 
-// What we're doing below is setting up the middleware 'pipeline'. All requests that
-// hit this server will run through the following steps, in the numbered order.
-
-// If this is at all confusing to you, take 15 mins and read:
-// https://www.safaribooksonline.com/blog/2014/03/10/express-js-middleware-demystified/
-// */
-
-// // 1. log every request when it comes in
-// app.use(morgan("dev"));
-
-// // 2. Set the headers for incoming requests
-// app.use((req, res, next) => {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header(
-//     "Access-Control-Allow-Methods",
-//     "GET,PUT,POST,DELETE,OPTIONS,PATCH"
-//   );
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept, authorization"
-//   );
-//   next();
-// });
-
-// // 3. Parse request bodies as json
-// app.use(bodyParser.json({ type: "application/json", limit: "50mb" }));
-
-// // 4. If the requests begin with '/api', hand them off to the API router
-// app.use("/api", apiRouter);
-// app.use(express.static(`${__dirname}/public`)); // otherwise load the client app
-
-// // 5. Catch unhandled errors thrown by any of the previous middleware steps
-// // eslint-disable-next-line no-unused-vars
-// app.use((err, req, res, next) => {
-//   if (err.stack) {
-//     if (err.stack.match("node_modules/body-parser"))
-//       return res.status(400).send("Invalid JSON");
-//   }
-
-//   services.logger.log(err);
-//   return res.status(500).send("Internal Error.");
-// });
-
-// //setup graphQL
-// const graphqlHTTP = require("express-graphql");
-// //to use graphQL (not sure if I have to delete the stuff above)
-// app.use(
-//   "/graphql",
-//   graphqlHTTP({
-//     schema,
-//     rootValue: root,
-//     graphiql: true,
-//   })
-// );
-
-// /**
-//  ********************************START SERVER********************************
-//  ****************************************************************************
-//  */
-
-// app.listen(config.express.port, () => {
-//   services.logger.log(`Server up and listening on port ${config.express.port}`);
-// });
+//Apollo-Server-Express setup: https://medium.com/@jeffrey.allen.lewis/graphql-migrating-from-apollo-server-express-1-0-to-2-0-be80f5c61bee
+//What is Axios: https://medium.com/@MinimalGhost/what-is-axios-js-and-why-should-i-care-7eb72b111dc0

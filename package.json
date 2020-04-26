@@ -1,21 +1,24 @@
 {
   "name": "api_solo_project",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon graphqlsetup.js",
+    "dev": "nodemon index.js",
     "lint": "eslint --fix .",
-    "start": "node graphqlsetup.js",
+    "start": "node index.js",
     "migrate": "knex migrate:latest --knexfile ./knexfile.js",
     "rollback": "knex migrate:rollback --knexfile ./knexfile.js",
     "precommit": "pretty-quick --staged"
   },
   "dependencies": {
+    "apollo-server": "^2.12.0",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
     "graphql": "^15.0.0",
+    "graphql-fetch": "^1.0.1",
+    "isomorphic-fetch": "^2.2.1",
     "knex": "^0.21.0",
     "moment": "^2.24.0",
     "morgan": "^1.10.0",
