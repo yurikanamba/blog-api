@@ -1,0 +1,323 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+}
+
+body {
+  font-weight: 200;
+  font-family: "Source Code Pro", monospace;
+  /*background-color: #212121;
+  color: #5fd0e1;*/
+  color: #212121;
+}
+
+header {
+  padding: 40px;
+  border-bottom: 0.2px solid #212121;
+}
+
+header h1 {
+  margin: 0 auto;
+  text-align: center;
+  font-size: 30px;
+}
+
+.body-container {
+  padding: 10px 50px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.post {
+  margin: 40px 0;
+}
+
+.title {
+  padding: 10px 0;
+  font-size: 23px;
+}
+
+.body {
+  padding: 5px 0;
+}
+
+.timestamp {
+  padding: 5px 0;
+  font-size: 13px;
+}
+
+.delete-btn {
+  margin: 5px;
+}
+
+.edit-btn {
+}
+
+.left-container {
+  width: 70vw;
+}
+
+.status-selector {
+  margin: 20px 0;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.right-container {
+  width: 30vw;
+  margin-top: 70px;
+}
+
+.add-post {
+  display: flex;
+  flex-direction: column;
+}
+
+.add-post input {
+  font-family: "Source Code Pro", monospace;
+  border: 1px solid #212121;
+  background-image: none;
+  background-color: transparent;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-wrap: break-word;
+}
+
+.add-post label {
+  margin-top: 30px;
+}
+
+.add-post select {
+  font-family: "Source Code Pro", monospace;
+  margin: 5px 0;
+  padding: 5px;
+  font-size: 10px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.add-post option {
+  font-family: "Source Code Pro", monospace;
+}
+
+.add-post button {
+  font-family: "Source Code Pro", monospace;
+  background-color: #212121; /* Green */
+  border: none;
+  color: white;
+  padding: 10px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+#post-body {
+  padding: 30px;
+}
+
+#popup {
+  display: none;
+  flex-direction: column;
+  margin: 20px 0;
+}
+
+#popup input {
+  margin: 5px 0;
+  padding: 10px;
+}
+
+#popup input {
+  font-family: "Source Code Pro", monospace;
+  border: 1px solid #212121;
+  background-image: none;
+  background-color: transparent;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-wrap: break-word;
+}
+
+#popup label {
+  margin-top: 30px;
+}
+
+#popup select {
+  font-family: "Source Code Pro", monospace;
+  margin: 5px 0;
+  padding: 5px;
+  font-size: 10px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+#popup option {
+  font-family: "Source Code Pro", monospace;
+}
+
+#popup button {
+  font-family: "Source Code Pro", monospace;
+  background-color: #212121; /* Green */
+  border: none;
+  color: white;
+  padding: 10px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+#post-body {
+  padding: 30px;
+}
+
+#github-link {
+  margin-left: 50px;
+  margin-bottom: 0;
+}
